@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { getAIConfig } from "./admin";
+import { getAIConfig_ } from "./admin";
 
 interface ChatMessage {
   role: "system" | "user" | "assistant";
