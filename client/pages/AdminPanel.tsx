@@ -35,7 +35,7 @@ export default function AdminPanel() {
   });
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "licenses" | "users" | "ai-config" | "maintenance"
+    "overview" | "licenses" | "users" | "ai-config" | "maintenance" | "message-history"
   >("overview");
 
   // License states
