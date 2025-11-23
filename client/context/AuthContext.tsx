@@ -68,6 +68,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let isMounted = true;
     let unsubscribe: (() => void) | null = null;
 
+    const initializeDeviceId = async () => {
+      try {
+        const fingerprint = await getDeviceFingerprint();
+        if (isMounted) {
+          setDeviceId(fingerprint.fingerprint);
+        }
+      } catch (err) {
+        console.error("Error getting device fingerprint:", err);
+      }
+    };
+
     const setupAuthListener = () => {
       unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (!isMounted) return;
@@ -80,12 +91,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                setUser({
+                const newUser: User = {
                   id: firebaseUser.uid,
                   name: userData.name,
                   email: firebaseUser.email || "",
                   plan: userData.plan || "Gratuit",
-                });
+                  isBanned: userData.isBanned || false,
+                  isSuspended: userData.isSuspended || false,
+                };
+                setUser(newUser);
+
+                if (deviceId && newUser.email) {
+                  try {
+                    const licenseData = await LicenseManager.verifyLicense(
+                      newUser.email,
+                      deviceId,
+                    );
+                    if (isMounted) {
+                      setWarnings(licenseData.warnings || []);
+                      setAlerts(licenseData.alerts || []);
+                      setMaintenanceMode(licenseData.maintenanceMode || false);
+                      setUser((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              messageCount: licenseData.messageCount,
+                              messageLimit: licenseData.messageLimit,
+                              expiresAt: licenseData.expiresAt,
+                              plan: licenseData.plan,
+                            }
+                          : null,
+                      );
+                    }
+                  } catch (licErr) {
+                    console.error("License verification error:", licErr);
+                  }
+                }
               } else {
                 setUser({
                   id: firebaseUser.uid,
@@ -112,6 +153,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
           } else {
             setUser(null);
+            setWarnings([]);
+            setAlerts([]);
           }
         } catch (err) {
           if (!isMounted) return;
@@ -125,6 +168,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
     };
 
+    initializeDeviceId();
     setupAuthListener();
 
     return () => {
