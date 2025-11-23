@@ -26,7 +26,9 @@ interface Conversation {
 export default function Chatbot() {
   const navigate = useNavigate();
   const { user, canSendMessage, incrementMessageCount } = useAuth();
-  const [systemPrompt, setSystemPrompt] = useState("You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.");
+  const [systemPrompt, setSystemPrompt] = useState(
+    "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.",
+  );
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     const savedConversations = localStorage.getItem("conversations");
     if (savedConversations) {

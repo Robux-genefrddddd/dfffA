@@ -5,7 +5,10 @@ export async function adminFetch(
   const headers = {
     "Content-Type": "application/json",
     ...options?.headers,
-    "X-Admin-Auth": sessionStorage.getItem("admin_authenticated") === "true" ? "true" : "false",
+    "X-Admin-Auth":
+      sessionStorage.getItem("admin_authenticated") === "true"
+        ? "true"
+        : "false",
   };
 
   return fetch(url, {

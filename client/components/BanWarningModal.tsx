@@ -107,16 +107,17 @@ export default function BanWarningModal() {
               <AlertTriangle size={32} style={{ color: iconColor }} />
             )}
           </div>
-          <h2 className="text-2xl font-bold text-center" style={{ color: "#FFFFFF" }}>
+          <h2
+            className="text-2xl font-bold text-center"
+            style={{ color: "#FFFFFF" }}
+          >
             {warning.title}
           </h2>
         </div>
 
         {/* Message */}
         <div className="space-y-4 mb-6">
-          <p style={{ color: "#CCCCCC" }}>
-            {warning.message}
-          </p>
+          <p style={{ color: "#CCCCCC" }}>{warning.message}</p>
 
           {warning.reason && (
             <div
@@ -124,7 +125,10 @@ export default function BanWarningModal() {
               style={{ backgroundColor: bgColor, borderColor }}
             >
               <p style={{ color: "#888888", fontSize: "0.875rem" }}>
-                <span style={{ fontWeight: "600", color: "#FFFFFF" }}>Reason:</span><br />
+                <span style={{ fontWeight: "600", color: "#FFFFFF" }}>
+                  Reason:
+                </span>
+                <br />
                 {warning.reason}
               </p>
             </div>
@@ -136,7 +140,10 @@ export default function BanWarningModal() {
               style={{ backgroundColor: bgColor, borderColor }}
             >
               <p style={{ color: "#888888", fontSize: "0.875rem" }}>
-                <span style={{ fontWeight: "600", color: "#FFFFFF" }}>Suspension Ends:</span><br />
+                <span style={{ fontWeight: "600", color: "#FFFFFF" }}>
+                  Suspension Ends:
+                </span>
+                <br />
                 {new Date(warning.endsAt).toLocaleString()}
               </p>
             </div>

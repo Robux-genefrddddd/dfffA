@@ -43,14 +43,17 @@ export default function AdminPanel() {
     plan: "Classic" as const,
     durationDays: 30,
   });
-  const [generatedLicenses, setGeneratedLicenses] = useState<GeneratedLicense[]>([]);
+  const [generatedLicenses, setGeneratedLicenses] = useState<
+    GeneratedLicense[]
+  >([]);
   const [generatedKey, setGeneratedKey] = useState("");
   const [copiedKey, setCopiedKey] = useState(false);
 
   // AI Config states
   const [aiConfig, setAIConfig] = useState<AIConfig>({
     model: "x-ai/grok-4.1-fast",
-    systemPrompt: "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.",
+    systemPrompt:
+      "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.",
     temperature: 0.7,
     maxTokens: 1024,
   });
@@ -125,13 +128,16 @@ export default function AdminPanel() {
     const { plan, durationDays } = licenseForm;
 
     try {
-      const data = await adminFetchJSON<any>("/api/admin/license/create-no-email", {
-        method: "POST",
-        body: JSON.stringify({
-          plan,
-          durationDays,
-        }),
-      });
+      const data = await adminFetchJSON<any>(
+        "/api/admin/license/create-no-email",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            plan,
+            durationDays,
+          }),
+        },
+      );
       setGeneratedKey(data.license.key);
       fetchLicenses();
     } catch (err) {
@@ -149,9 +155,7 @@ export default function AdminPanel() {
     if (!confirm("Êtes-vous sûr de vouloir supprimer cette licence?")) return;
 
     try {
-      setGeneratedLicenses(
-        generatedLicenses.filter((l) => l.id !== licenseId),
-      );
+      setGeneratedLicenses(generatedLicenses.filter((l) => l.id !== licenseId));
       alert("Licence supprimée avec succès");
     } catch (err) {
       alert(`Erreur: ${err instanceof Error ? err.message : "Unknown error"}`);
@@ -259,25 +263,25 @@ export default function AdminPanel() {
         className="border-b flex gap-8 px-6 overflow-x-auto"
         style={{ backgroundColor: "#0D0D0D", borderColor: "#1A1A1A" }}
       >
-        {(["overview", "licenses", "users", "ai-config", "maintenance"] as const).map(
-          (tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`py-4 px-2 font-semibold border-b-2 whitespace-nowrap transition-colors ${
-                activeTab === tab
-                  ? "border-blue-500 text-blue-500"
-                  : "border-transparent text-slate-400 hover:text-white"
-              }`}
-            >
-              {tab === "overview" && "Aperçu"}
-              {tab === "licenses" && "Licences"}
-              {tab === "users" && "Utilisateurs"}
-              {tab === "ai-config" && "Config IA"}
-              {tab === "maintenance" && "Maintenance"}
-            </button>
-          ),
-        )}
+        {(
+          ["overview", "licenses", "users", "ai-config", "maintenance"] as const
+        ).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`py-4 px-2 font-semibold border-b-2 whitespace-nowrap transition-colors ${
+              activeTab === tab
+                ? "border-blue-500 text-blue-500"
+                : "border-transparent text-slate-400 hover:text-white"
+            }`}
+          >
+            {tab === "overview" && "Aperçu"}
+            {tab === "licenses" && "Licences"}
+            {tab === "users" && "Utilisateurs"}
+            {tab === "ai-config" && "Config IA"}
+            {tab === "maintenance" && "Maintenance"}
+          </button>
+        ))}
       </div>
 
       {/* Content */}
@@ -501,10 +505,15 @@ export default function AdminPanel() {
                           <p className="text-sm font-mono text-white break-all">
                             {license.key}
                           </p>
-                          <p className="text-xs mt-1" style={{ color: "#888888" }}>
-                            Plan: {license.plan} | Durée: {license.durationDays}j |
-                            Expire: {new Date(license.expiresAt).toLocaleDateString()}
-                            {license.usedBy && ` | Utilisé par: ${license.usedBy}`}
+                          <p
+                            className="text-xs mt-1"
+                            style={{ color: "#888888" }}
+                          >
+                            Plan: {license.plan} | Durée: {license.durationDays}
+                            j | Expire:{" "}
+                            {new Date(license.expiresAt).toLocaleDateString()}
+                            {license.usedBy &&
+                              ` | Utilisé par: ${license.usedBy}`}
                           </p>
                         </div>
                         <button
@@ -606,14 +615,15 @@ export default function AdminPanel() {
                 </h3>
 
                 {users.length === 0 ? (
-                  <p style={{ color: "#888888" }}>
-                    Aucun utilisateur trouvé
-                  </p>
+                  <p style={{ color: "#888888" }}>Aucun utilisateur trouvé</p>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr style={{ borderColor: "#1A1A1A" }} className="border-b">
+                        <tr
+                          style={{ borderColor: "#1A1A1A" }}
+                          className="border-b"
+                        >
                           <th
                             className="text-left py-3 px-4"
                             style={{ color: "#FFFFFF" }}
@@ -647,16 +657,27 @@ export default function AdminPanel() {
                             style={{ borderColor: "#1A1A1A" }}
                             className="border-b hover:bg-slate-900/50"
                           >
-                            <td className="py-3 px-4" style={{ color: "#FFFFFF" }}>
+                            <td
+                              className="py-3 px-4"
+                              style={{ color: "#FFFFFF" }}
+                            >
                               {user.email}
                             </td>
                             <td className="py-3 px-4">
-                              <span className="px-2 py-1 rounded text-xs font-semibold"
-                                style={{ backgroundColor: "#0A84FF", color: "#FFFFFF" }}>
+                              <span
+                                className="px-2 py-1 rounded text-xs font-semibold"
+                                style={{
+                                  backgroundColor: "#0A84FF",
+                                  color: "#FFFFFF",
+                                }}
+                              >
                                 {user.plan}
                               </span>
                             </td>
-                            <td className="py-3 px-4" style={{ color: "#888888" }}>
+                            <td
+                              className="py-3 px-4"
+                              style={{ color: "#888888" }}
+                            >
                               {user.messageCount}/{user.messageLimit}
                             </td>
                             <td className="py-3 px-4">
@@ -669,7 +690,11 @@ export default function AdminPanel() {
                                       : "bg-green-600/20 text-green-400"
                                 }`}
                               >
-                                {user.isBanned ? "Banni" : user.isSuspended ? "Suspendu" : "Actif"}
+                                {user.isBanned
+                                  ? "Banni"
+                                  : user.isSuspended
+                                    ? "Suspendu"
+                                    : "Actif"}
                               </span>
                             </td>
                           </tr>
@@ -735,7 +760,11 @@ export default function AdminPanel() {
                     </label>
                     <input
                       type="text"
-                      value={aiConfigEditing ? (aiConfigChanges.model || aiConfig.model) : aiConfig.model}
+                      value={
+                        aiConfigEditing
+                          ? aiConfigChanges.model || aiConfig.model
+                          : aiConfig.model
+                      }
                       onChange={(e) =>
                         setAIConfigChanges({
                           ...aiConfigChanges,
@@ -759,7 +788,11 @@ export default function AdminPanel() {
                     </label>
                     <input
                       type="number"
-                      value={aiConfigEditing ? (aiConfigChanges.temperature || aiConfig.temperature) : aiConfig.temperature}
+                      value={
+                        aiConfigEditing
+                          ? aiConfigChanges.temperature || aiConfig.temperature
+                          : aiConfig.temperature
+                      }
                       onChange={(e) =>
                         setAIConfigChanges({
                           ...aiConfigChanges,
@@ -786,7 +819,11 @@ export default function AdminPanel() {
                     </label>
                     <input
                       type="number"
-                      value={aiConfigEditing ? (aiConfigChanges.maxTokens || aiConfig.maxTokens) : aiConfig.maxTokens}
+                      value={
+                        aiConfigEditing
+                          ? aiConfigChanges.maxTokens || aiConfig.maxTokens
+                          : aiConfig.maxTokens
+                      }
                       onChange={(e) =>
                         setAIConfigChanges({
                           ...aiConfigChanges,
@@ -811,7 +848,12 @@ export default function AdminPanel() {
                       Prompt système
                     </label>
                     <textarea
-                      value={aiConfigEditing ? (aiConfigChanges.systemPrompt || aiConfig.systemPrompt) : aiConfig.systemPrompt}
+                      value={
+                        aiConfigEditing
+                          ? aiConfigChanges.systemPrompt ||
+                            aiConfig.systemPrompt
+                          : aiConfig.systemPrompt
+                      }
                       onChange={(e) =>
                         setAIConfigChanges({
                           ...aiConfigChanges,

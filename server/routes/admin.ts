@@ -1,5 +1,12 @@
 import { RequestHandler } from "express";
-import { AdminLicenseCreate, AdminUserAction, LicensePlan, GeneratedLicense, AIConfig, UserListItem } from "@shared/api";
+import {
+  AdminLicenseCreate,
+  AdminUserAction,
+  LicensePlan,
+  GeneratedLicense,
+  AIConfig,
+  UserListItem,
+} from "@shared/api";
 import {
   generateLicenseKey,
   calculateMessageLimit,
@@ -11,7 +18,8 @@ import {
 const generatedLicenses: Map<string, GeneratedLicense> = new Map();
 let aiConfig: AIConfig = {
   model: "x-ai/grok-4.1-fast",
-  systemPrompt: "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.",
+  systemPrompt:
+    "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.",
   temperature: 0.7,
   maxTokens: 1024,
 };
@@ -127,7 +135,10 @@ export const handleCreateLicenseNoEmail: RequestHandler = async (req, res) => {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
-    const { plan, durationDays } = req.body as { plan: LicensePlan; durationDays: number };
+    const { plan, durationDays } = req.body as {
+      plan: LicensePlan;
+      durationDays: number;
+    };
 
     if (!plan || !durationDays) {
       return res.status(400).json({
