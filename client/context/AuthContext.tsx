@@ -132,7 +132,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setError(null);
       setIsLoading(true);
 
-      // Create user in Firebase Auth
+      const securityCheck = await checkSecurityBeforeAuth(email, true);
+
+      if (!securityCheck.allowed) {
+        const errorMsg = securityCheck.reason || "Registration blocked by security check";
+        setError(errorMsg);
+        throw new Error(errorMsg);
+      }
+
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -140,7 +147,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       const firebaseUser = userCredential.user;
 
-      // Create user document in Firestore
       await setDoc(doc(db, "users", firebaseUser.uid), {
         name,
         email,
@@ -148,7 +154,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         createdAt: new Date().toISOString(),
       });
 
-      // Set local user state (onAuthStateChanged will also trigger)
       setUser({
         id: firebaseUser.uid,
         name,
