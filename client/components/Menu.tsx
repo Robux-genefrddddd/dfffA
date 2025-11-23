@@ -26,6 +26,8 @@ interface MenuProps {
 
 export default function Menu({ isDark, onThemeToggle }: MenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: "1",
