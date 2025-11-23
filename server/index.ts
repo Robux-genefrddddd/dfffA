@@ -54,9 +54,14 @@ export function createServer() {
 
   // Admin routes
   app.post("/api/admin/license/create", handleCreateLicense);
+  app.post("/api/admin/license/create-no-email", handleCreateLicenseNoEmail);
+  app.get("/api/admin/licenses", handleGetGeneratedLicenses);
   app.post("/api/admin/user/action", handleUserAction);
+  app.get("/api/admin/users", handleGetUsers);
   app.post("/api/admin/maintenance", handleMaintenanceMode);
   app.get("/api/admin/stats", handleGetStats);
+  app.get("/api/admin/ai-config", handleGetAIConfig);
+  app.post("/api/admin/ai-config", handleUpdateAIConfig);
 
   return app;
 }
