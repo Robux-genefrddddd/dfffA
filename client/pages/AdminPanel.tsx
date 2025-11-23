@@ -122,6 +122,26 @@ export default function AdminPanel() {
     }
   };
 
+  const fetchMessageHistory = async (userId: string) => {
+    if (!userId) {
+      setMessageHistory([]);
+      return;
+    }
+
+    setLoadingMessages(true);
+    try {
+      const data = await adminFetchJSON<any>(
+        `/api/admin/message-history?userId=${encodeURIComponent(userId)}`,
+      );
+      setMessageHistory(data.messages || []);
+    } catch (err) {
+      console.error("Failed to fetch message history:", err);
+      setMessageHistory([]);
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
