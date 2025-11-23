@@ -234,15 +234,25 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
           </div>
 
           {/* Quick Settings Section */}
-          <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-900">
-            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-3">
+          <div
+            className="px-4 py-4 border-t"
+            style={{ borderColor: "#1A1A1A" }}
+          >
+            <h3
+              className="text-xs font-semibold uppercase tracking-wider px-2 mb-3"
+              style={{ color: "#666666" }}
+            >
               Paramètres Rapides
             </h3>
             <nav className="space-y-2">
               {/* Paramètres */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 text-sm rounded-lg"
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                }}
               >
                 <Settings size={18} />
                 <span className="font-medium">Paramètres</span>
@@ -251,7 +261,11 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Profil */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 text-sm rounded-lg"
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                }}
               >
                 <User size={18} />
                 <span className="font-medium">Profil</span>
@@ -260,7 +274,11 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Aide */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 text-sm rounded-lg"
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                }}
               >
                 <HelpCircle size={18} />
                 <span className="font-medium">Aide</span>
