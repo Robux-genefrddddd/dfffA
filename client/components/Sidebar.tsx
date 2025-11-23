@@ -80,7 +80,7 @@ export default function Sidebar({
           {/* Avatar */}
           <button
             onClick={() => setShowAvatarModal(true)}
-            className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-transform hover:scale-110 relative group"
+            className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-transform hover:scale-110 relative group overflow-hidden"
             style={{
               backgroundColor: "#1A1A1A",
               border: "2px solid #0A84FF",
@@ -88,7 +88,15 @@ export default function Sidebar({
             }}
             title="Click to customize avatar"
           >
-            {user?.avatar || "👤"}
+            {user?.avatarType === "image" || user?.avatarType === "url" ? (
+              <img
+                src={user.avatar}
+                alt="avatar"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              user?.avatar || "👤"
+            )}
             <div
               className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               style={{
