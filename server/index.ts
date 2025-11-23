@@ -66,8 +66,7 @@ export function createServer() {
 
   // Public routes (no auth needed)
   app.get("/api/ai-config", (req, res) => {
-    const { getAIConfig } = require("./routes/admin");
-    res.json({ success: true, config: getAIConfig });
+    res.json({ success: true, config: getAIConfig_() });
   });
 
   return app;
