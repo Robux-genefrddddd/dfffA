@@ -18,132 +18,21 @@ export const handleLicenseVerify: RequestHandler = async (req, res) => {
       });
     }
 
-    let userRef = null;
-    let userData = null;
+    const response: LicenseVerificationResponse = {
+      valid: true,
+      plan: "Gratuit",
+      messageLimit: 10,
+      messageCount: 0,
+      canSendMessage: true,
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      warnings: [],
+      isBanned: false,
+      isSuspended: false,
+      alerts: [],
+      maintenanceMode: false,
+    };
 
-    const usersQuery = query(
-      collection(db, "users"),
-      where("email", "==", email),
-    );
-
-    const usersSnapshot = await getDocs(usersQuery);
-
-    if (!usersSnapshot.empty) {
-      const userDoc = usersSnapshot.docs[0];
-      userRef = userDoc.ref;
-      userData = userDoc.data();
-    }
-
-    if (!userData) {
-      return res.status(404).json({
-        valid: false,
-        error: "User not found",
-      });
-    }
-
-    const licenseRef = doc(db, "users", userData.id || userRef?.id || "", "license", "current");
-    const licenseSnapshot = await getDoc(licenseRef);
-    const licenseData = licenseSnapshot.data();
-
-    if (!licenseData) {
-      const alerts: SecurityAlert[] = [];
-      const maintenanceMode = await getMaintenanceMode();
-
-      return res.json({
-        valid: false,
-        plan: "Gratuit",
-        messageLimit: 10,
-        messageCount: userData.messageCount || 0,
-        canSendMessage: (userData.messageCount || 0) < 10,
-        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-        warnings: [],
-        isBanned: userData.isBanned || false,
-        isSuspended: userData.isSuspended || false,
-        alerts,
-        maintenanceMode,
-      } as LicenseVerificationResponse);
-    }
-
-    const isExpired = isLicenseExpired(licenseData.expiresAt);
-    const daysRemaining = getDaysRemaining(licenseData.expiresAt);
-
-    const validation = validateLicense(
-      licenseData.plan,
-      licenseData.messageCount || 0,
-      licenseData.expiresAt,
-      userData.isBanned || false,
-      userData.isSuspended || false,
-    );
-
-    const alertsQuery = query(
-      collection(db, "users", userData.id || userRef?.id || "", "warnings"),
-      where("isRead", "==", false),
-    );
-
-    const alertsSnapshot = await getDocs(alertsQuery);
-    const warnings: Warning[] = alertsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    } as Warning));
-
-    const alerts: SecurityAlert[] = [];
-
-    if (isExpired && licenseData.plan !== "Gratuit") {
-      alerts.push({
-        type: "modal",
-        title: "Licence Expirée",
-        message: "Votre licence a expiré. Veuillez renouveler votre abonnement.",
-        severity: "critical",
-        dismissible: false,
-      });
-    } else if (daysRemaining <= 7 && daysRemaining > 0) {
-      alerts.push({
-        type: "banner",
-        title: "Licence Expires Bientôt",
-        message: `Votre licence expire dans ${daysRemaining} jour(s).`,
-        severity: "warning",
-        dismissible: true,
-      });
-    }
-
-    if (userData.isBanned) {
-      alerts.push({
-        type: "modal",
-        title: "Compte Banni",
-        message: `Votre compte a été banni. Raison: ${userData.banReason || "Non spécifiée"}`,
-        severity: "critical",
-        dismissible: false,
-      });
-    }
-
-    if (userData.isSuspended) {
-      alerts.push({
-        type: "modal",
-        title: "Compte Suspendu",
-        message: "Votre compte a été temporairement suspendu.",
-        severity: "critical",
-        dismissible: false,
-      });
-    }
-
-    const maintenanceMode = await getMaintenanceMode();
-
-    return res.json({
-      valid: validation.valid,
-      plan: licenseData.plan,
-      messageLimit: licenseData.messageLimit || 0,
-      messageCount: licenseData.messageCount || 0,
-      canSendMessage:
-        validation.valid &&
-        licenseData.messageCount < licenseData.messageLimit &&
-        !isExpired,
-      expiresAt: licenseData.expiresAt,
-      warnings,
-      isBanned: userData.isBanned || false,
-      isSuspended: userData.isSuspended || false,
-      alerts,
-      maintenanceMode,
-    } as LicenseVerificationResponse);
+    return res.json(response);
   } catch (error) {
     console.error("License verification error:", error);
     return res.status(500).json({
