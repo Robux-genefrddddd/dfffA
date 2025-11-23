@@ -77,12 +77,22 @@ export default function BanWarningModal() {
   }
 
   // This modal cannot be closed without acknowledging
-  const handleAcknowledge = () => {
+  const handleAcknowledge = async () => {
     setAcknowledged(true);
     if (warning.type === "ban") {
-      // Logout if banned
-      window.location.href = "/login";
+      try {
+        await logout();
+      } catch (err) {
+        console.error("Error logging out:", err);
+      } finally {
+        window.location.href = "/login";
+      }
     }
+  };
+
+  const handleClickOutside = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   const iconColor =
