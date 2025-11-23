@@ -291,6 +291,9 @@ export default function Sidebar({
           <span>Déconnexion</span>
         </button>
       </div>
+
+      {/* Avatar Modal */}
+      <AvatarModal isOpen={showAvatarModal} onClose={() => setShowAvatarModal(false)} />
     </div>
   );
 }
