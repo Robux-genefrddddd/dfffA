@@ -4,13 +4,13 @@ interface CaptchaVerifyRequest {
   token: string;
 }
 
-interface TurnstileVerifyResponse {
+interface HcaptchaVerifyResponse {
   success: boolean;
   challenge_ts?: string;
   hostname?: string;
-  "error-codes"?: string[];
   score?: number;
-  action?: string;
+  score_reason?: string[];
+  "error-codes"?: string[];
 }
 
 export const handleCaptchaVerify: RequestHandler = async (req, res) => {
@@ -24,9 +24,9 @@ export const handleCaptchaVerify: RequestHandler = async (req, res) => {
       });
     }
 
-    const secretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
+    const secretKey = process.env.HCAPTCHA_SECRET_KEY;
     if (!secretKey) {
-      console.error("Cloudflare Turnstile secret key not configured");
+      console.error("hCaptcha secret key not configured");
       return res.status(500).json({
         success: false,
         error: "Captcha verification service misconfigured",
@@ -40,26 +40,23 @@ export const handleCaptchaVerify: RequestHandler = async (req, res) => {
       formData.append("remoteip", req.ip);
     }
 
-    const response = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+    const response = await fetch("https://hcaptcha.com/siteverify", {
+      method: "POST",
+      body: formData,
+    });
 
     if (!response.ok) {
-      console.error("Cloudflare API error:", response.status, response.statusText);
+      console.error("hCaptcha API error:", response.status, response.statusText);
       return res.status(500).json({
         success: false,
         error: "Failed to verify captcha",
       });
     }
 
-    const data = (await response.json()) as TurnstileVerifyResponse;
+    const data = (await response.json()) as HcaptchaVerifyResponse;
 
     if (!data.success) {
-      console.error("Turnstile verification failed:", data["error-codes"]);
+      console.error("hCaptcha verification failed:", data["error-codes"]);
       return res.status(403).json({
         success: false,
         error: "Captcha verification failed",
