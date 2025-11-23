@@ -8,6 +8,7 @@ import CodeBlock from "./CodeBlock";
 import LicenseDialog from "./LicenseDialog";
 import { parseCodeBlocks } from "@/lib/codeDisplay";
 import { useAuth } from "@/hooks/useAuth";
+import { PrivateMessageHistory } from "@/lib/privateMessageHistory";
 
 interface Message {
   id: string;
