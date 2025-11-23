@@ -66,9 +66,6 @@ export default function Login() {
       const captchaVerification = await verifyCaptchaToken(captchaToken);
       if (!captchaVerification.success) {
         setError(captchaVerification.error || "Captcha verification failed");
-        if (captchaRef.current) {
-          captchaRef.current.reset();
-        }
         setCaptchaToken("");
         return;
       }
