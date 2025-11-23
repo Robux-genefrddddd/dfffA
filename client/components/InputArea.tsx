@@ -17,6 +17,7 @@ export default function InputArea({
   disabled = false,
   isLoading = false,
 }: InputAreaProps) {
+  const { user } = useAuth();
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
