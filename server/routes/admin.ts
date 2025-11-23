@@ -6,21 +6,6 @@ import {
   calculateExpiryDate,
   formatLicenseKey,
 } from "../lib/licenseUtils";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  setDoc,
-  updateDoc,
-  getDoc,
-  addDoc,
-} from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
-import app from "../lib/firebaseAdmin";
-
-const db = getFirestore(app);
 
 const ADMIN_EMAIL = "founder@example.com";
 
