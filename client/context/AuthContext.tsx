@@ -207,6 +207,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const incrementMessageCount = async (): Promise<void> => {
+    if (!user) return;
+
+    try {
+      const newCount = (user.messageCount || 0) + 1;
+      await setDoc(
+        doc(db, "users", user.id),
+        { messageCount: newCount },
+        { merge: true }
+      );
+      setUser({ ...user, messageCount: newCount });
+    } catch (err) {
+      console.error("Failed to increment message count:", err);
+    }
+  };
+
+  const canSendMessage = (): boolean => {
+    if (!user) return false;
+    if (user.plan !== "Gratuit") return true;
+    return (user.messageCount || 0) < 100;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -217,6 +239,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         updatePlan,
+        incrementMessageCount,
+        canSendMessage,
         error,
       }}
     >
