@@ -10,6 +10,12 @@ import {
   handleLicenseActivate,
   handleIncrementMessageCount,
 } from "./routes/license";
+import {
+  handleCreateLicense,
+  handleUserAction,
+  handleMaintenanceMode,
+  handleGetStats,
+} from "./routes/admin";
 
 export function createServer() {
   const app = express();
