@@ -101,24 +101,34 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
       {/* Hamburger Button - Only show on mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden btn-icon-glass w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none p-1"
+        className="lg:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none p-1 rounded-lg transition-colors duration-200"
         aria-label="Toggle menu"
         aria-expanded={isOpen}
+        style={{
+          backgroundColor: "#1A1A1A",
+          color: "#FFFFFF",
+        }}
       >
         <span
-          className={`block w-5 h-0.5 bg-black dark:bg-white transition-all duration-300 origin-center ${
-            isOpen ? "rotate-45 translate-y-2" : ""
-          }`}
+          className={`block w-5 h-0.5 transition-all duration-300 origin-center`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            transform: isOpen ? "rotate(45deg) translateY(8px)" : "none",
+          }}
         />
         <span
-          className={`block w-5 h-0.5 bg-black dark:bg-white transition-all duration-300 ${
-            isOpen ? "opacity-0" : ""
-          }`}
+          className={`block w-5 h-0.5 transition-all duration-300`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            opacity: isOpen ? 0 : 1,
+          }}
         />
         <span
-          className={`block w-5 h-0.5 bg-black dark:bg-white transition-all duration-300 origin-center ${
-            isOpen ? "-rotate-45 -translate-y-2" : ""
-          }`}
+          className={`block w-5 h-0.5 transition-all duration-300 origin-center`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            transform: isOpen ? "-rotate(45deg) -translateY(8px)" : "none",
+          }}
         />
       </button>
 
