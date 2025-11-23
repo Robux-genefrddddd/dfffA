@@ -171,7 +171,9 @@ export default function Chatbot() {
           errorData = JSON.parse(responseText);
           throw new Error(errorData.error || "Failed to get response from AI");
         } catch (parseError) {
-          throw new Error(`Failed to get response from AI: ${response.statusText}`);
+          throw new Error(
+            `Failed to get response from AI: ${response.statusText}`,
+          );
         }
       }
 

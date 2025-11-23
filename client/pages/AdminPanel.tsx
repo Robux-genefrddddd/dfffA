@@ -17,7 +17,6 @@ import {
 import { LicensePlan, AdminLicenseCreate, AdminUserAction } from "@shared/api";
 import { LicenseManager } from "@/lib/licenseManager";
 
-
 interface AdminStats {
   totalUsers: number;
   activeSubscriptions: number;

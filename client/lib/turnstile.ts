@@ -42,7 +42,7 @@ export const getSiteKey = (): string => {
   if (!siteKey) {
     console.warn(
       "[hCaptcha] Warning: VITE_HCAPTCHA_SITE_KEY environment variable is not set. " +
-        "hCaptcha widget will not render. Make sure your .env file includes VITE_HCAPTCHA_SITE_KEY."
+        "hCaptcha widget will not render. Make sure your .env file includes VITE_HCAPTCHA_SITE_KEY.",
     );
   }
 
