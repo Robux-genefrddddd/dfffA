@@ -49,62 +49,72 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     let isMounted = true;
+    let unsubscribe: (() => void) | null = null;
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      try {
+    const setupAuthListener = () => {
+      unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (!isMounted) return;
 
-        if (firebaseUser) {
-          try {
-            const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-            if (!isMounted) return;
+        try {
+          if (firebaseUser) {
+            try {
+              const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+              if (!isMounted) return;
 
-            if (userDoc.exists()) {
-              const userData = userDoc.data();
-              setUser({
-                id: firebaseUser.uid,
-                name: userData.name,
-                email: firebaseUser.email || "",
-                plan: userData.plan || "Gratuit",
-              });
-            } else {
-              setUser({
-                id: firebaseUser.uid,
-                name: "",
-                email: firebaseUser.email || "",
-                plan: "Gratuit",
-              });
+              if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setUser({
+                  id: firebaseUser.uid,
+                  name: userData.name,
+                  email: firebaseUser.email || "",
+                  plan: userData.plan || "Gratuit",
+                });
+              } else {
+                setUser({
+                  id: firebaseUser.uid,
+                  name: "",
+                  email: firebaseUser.email || "",
+                  plan: "Gratuit",
+                });
+              }
+            } catch (docErr) {
+              if (!isMounted) return;
+              if (docErr instanceof Error && docErr.message?.includes("aborted")) {
+                return;
+              }
+              console.error("Error fetching user document:", docErr);
+              setError(
+                docErr instanceof Error
+                  ? docErr.message
+                  : "Failed to load user profile",
+              );
             }
-          } catch (docErr) {
-            if (!isMounted) return;
-            console.error("Error fetching user document:", docErr);
-            setError(
-              docErr instanceof Error
-                ? docErr.message
-                : "Failed to load user profile",
-            );
+          } else {
+            setUser(null);
           }
-        } else {
-          setUser(null);
+        } catch (err) {
+          if (!isMounted) return;
+          console.error("Error in auth state change:", err);
+          setError(err instanceof Error ? err.message : "Failed to load user");
+        } finally {
+          if (isMounted) {
+            setIsLoading(false);
+          }
         }
-      } catch (err) {
-        if (!isMounted) return;
-        console.error("Error in auth state change:", err);
-        setError(err instanceof Error ? err.message : "Failed to load user");
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    });
+      });
+    };
+
+    setupAuthListener();
 
     return () => {
-      try {
-        unsubscribe();
-      } catch (err) {
-        console.error("Error unsubscribing from auth:", err);
-      }
       isMounted = false;
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (err) {
+          console.error("Error unsubscribing from auth:", err);
+        }
+      }
     };
   }, []);
 
