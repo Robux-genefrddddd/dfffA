@@ -21,6 +21,8 @@ export interface User {
   name: string;
   email: string;
   plan: Plan;
+  messageCount?: number;
+  licenseKey?: string;
 }
 
 interface AuthContextType {
@@ -31,10 +33,14 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updatePlan: (plan: Plan) => Promise<void>;
+  incrementMessageCount: () => Promise<void>;
+  canSendMessage: () => boolean;
   error: string | null;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -42,42 +48,64 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Listen to Firebase auth state changes
+    let isMounted = true;
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
+        if (!isMounted) return;
+
         if (firebaseUser) {
-          // User is logged in - fetch their profile from Firestore
-          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUser({
-              id: firebaseUser.uid,
-              name: userData.name,
-              email: firebaseUser.email || "",
-              plan: userData.plan || "Gratuit",
-            });
-          } else {
-            // Fallback if user doc doesn't exist (shouldn't happen)
-            setUser({
-              id: firebaseUser.uid,
-              name: "",
-              email: firebaseUser.email || "",
-              plan: "Gratuit",
-            });
+          try {
+            const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+            if (!isMounted) return;
+
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              setUser({
+                id: firebaseUser.uid,
+                name: userData.name,
+                email: firebaseUser.email || "",
+                plan: userData.plan || "Gratuit",
+              });
+            } else {
+              setUser({
+                id: firebaseUser.uid,
+                name: "",
+                email: firebaseUser.email || "",
+                plan: "Gratuit",
+              });
+            }
+          } catch (docErr) {
+            if (!isMounted) return;
+            console.error("Error fetching user document:", docErr);
+            setError(
+              docErr instanceof Error
+                ? docErr.message
+                : "Failed to load user profile",
+            );
           }
         } else {
-          // User is logged out
           setUser(null);
         }
       } catch (err) {
-        console.error("Error loading user:", err);
+        if (!isMounted) return;
+        console.error("Error in auth state change:", err);
         setError(err instanceof Error ? err.message : "Failed to load user");
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     });
 
-    return unsubscribe;
+    return () => {
+      try {
+        unsubscribe();
+      } catch (err) {
+        console.error("Error unsubscribing from auth:", err);
+      }
+      isMounted = false;
+    };
   }, []);
 
   const register = async (
@@ -185,6 +213,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const incrementMessageCount = async (): Promise<void> => {
+    if (!user) return;
+
+    try {
+      const newCount = (user.messageCount || 0) + 1;
+      await setDoc(
+        doc(db, "users", user.id),
+        { messageCount: newCount },
+        { merge: true },
+      );
+      setUser({ ...user, messageCount: newCount });
+    } catch (err) {
+      console.error("Failed to increment message count:", err);
+    }
+  };
+
+  const canSendMessage = (): boolean => {
+    if (!user) return false;
+    if (user.plan !== "Gratuit") return true;
+    return (user.messageCount || 0) < 100;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -195,6 +245,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         updatePlan,
+        incrementMessageCount,
+        canSendMessage,
         error,
       }}
     >

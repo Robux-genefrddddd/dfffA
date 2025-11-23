@@ -11,7 +11,10 @@ import Index from "./pages/Index";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
+import AdminPanel from "./pages/AdminPanel";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
 
@@ -53,30 +56,69 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? children : <Navigate to="/register" />;
 };
 
-const AppRoutes = () => (
-  <Routes>
-    <Route path="/register" element={<Register />} />
-    <Route path="/login" element={<Login />} />
-    <Route
-      path="/"
-      element={
-        <ProtectedRoute>
-          <Index />
-        </ProtectedRoute>
+const AppRoutes = () => {
+  const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "F1") {
+        e.preventDefault();
+        setAdminPanelOpen(true);
       }
-    />
-    <Route
-      path="/admin"
-      element={
-        <ProtectedRoute>
-          <Admin />
-        </ProtectedRoute>
-      }
-    />
-    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-    <Route path="*" element={<NotFound />} />
-  </Routes>
-);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  if (adminPanelOpen) {
+    return (
+      <div>
+        <AdminPanel />
+        <button
+          onClick={() => setAdminPanelOpen(false)}
+          className="fixed top-4 right-4 bg-gray-700 text-white px-4 py-2 rounded"
+        >
+          Close
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <Routes>
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Index />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/admin-panel" element={<AdminPanel />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 const App = () => (
   <AuthProvider>

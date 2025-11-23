@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Plus, User } from "lucide-react";
+import { Send, Plus, User, Zap, Settings as SettingsIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Menu from "./Menu";
 import Sidebar from "./Sidebar";
 import InputArea from "./InputArea";
+import CodeBlock from "./CodeBlock";
+import LicenseDialog from "./LicenseDialog";
+import { parseCodeBlocks } from "@/lib/codeDisplay";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
@@ -19,6 +24,8 @@ interface Conversation {
 }
 
 export default function Chatbot() {
+  const navigate = useNavigate();
+  const { user, canSendMessage, incrementMessageCount } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     const newId = Date.now().toString();
     return [
@@ -37,6 +44,7 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeConversation = conversations.find(
@@ -80,6 +88,24 @@ export default function Chatbot() {
 
   const handleSendMessage = async () => {
     if (!input.trim() || !activeConversation) return;
+
+    if (!canSendMessage()) {
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        content: `You have reached your message limit (100 messages) on the Free plan. Upgrade to continue.`,
+        sender: "assistant",
+        timestamp: new Date(),
+      };
+
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === activeConversationId
+            ? { ...conv, messages: [...conv.messages, errorMessage] }
+            : conv,
+        ),
+      );
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -137,6 +163,8 @@ export default function Chatbot() {
             : conv,
         ),
       );
+
+      await incrementMessageCount();
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -202,20 +230,44 @@ export default function Chatbot() {
             borderColor: "#1A1A1A",
           }}
         >
-          {/* Left: Title */}
-          <div className="min-w-0">
-            <h1
-              className="text-xl sm:text-2xl font-bold truncate"
-              style={{ color: "#FFFFFF" }}
-            >
-              Chat
-            </h1>
+          {/* Left: Title and Counter */}
+          <div className="min-w-0 flex items-center gap-4">
+            <div>
+              <h1
+                className="text-xl sm:text-2xl font-bold truncate"
+                style={{ color: "#FFFFFF" }}
+              >
+                Chat
+              </h1>
+              {user?.plan === "Gratuit" && (
+                <p className="text-xs" style={{ color: "#999999" }}>
+                  Messages: {user?.messageCount || 0}/100
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Right: Action Buttons */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Quick Action Button */}
+            {/* Upgrade Button - Only for Free Plan */}
+            {user?.plan === "Gratuit" && (
+              <button
+                onClick={() => setLicenseDialogOpen(true)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200"
+                title="Upgrade plan"
+                style={{
+                  backgroundColor: "#FF9500",
+                  color: "#FFFFFF",
+                }}
+              >
+                <Zap size={18} />
+                <span className="text-sm hidden sm:inline">Upgrade</span>
+              </button>
+            )}
+
+            {/* New Chat Button */}
             <button
+              onClick={handleNewConversation}
               className="p-2 rounded-lg transition-colors duration-200"
               title="New chat"
               style={{
@@ -224,6 +276,19 @@ export default function Chatbot() {
               }}
             >
               <Plus size={20} />
+            </button>
+
+            {/* Settings Button */}
+            <button
+              onClick={() => navigate("/settings")}
+              className="p-2 rounded-lg transition-colors duration-200 hover:bg-white/10"
+              title="Settings"
+              style={{
+                backgroundColor: "#1A1A1A",
+                color: "#FFFFFF",
+              }}
+            >
+              <SettingsIcon size={20} />
             </button>
 
             {/* User Profile Button */}
@@ -273,9 +338,30 @@ export default function Chatbot() {
                         }
                   }
                 >
-                  <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </p>
+                  {message.sender === "user" ? (
+                    <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                      {message.content}
+                    </p>
+                  ) : (
+                    <div>
+                      {parseCodeBlocks(message.content).map((part, idx) =>
+                        typeof part === "string" ? (
+                          <p
+                            key={idx}
+                            className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap mb-2"
+                          >
+                            {part}
+                          </p>
+                        ) : (
+                          <CodeBlock
+                            key={idx}
+                            code={part.code}
+                            language={part.language}
+                          />
+                        ),
+                      )}
+                    </div>
+                  )}
                   <p
                     className="text-xs mt-2.5"
                     style={
@@ -340,6 +426,12 @@ export default function Chatbot() {
           isLoading={isLoading}
         />
       </div>
+
+      {/* License Dialog */}
+      <LicenseDialog
+        isOpen={licenseDialogOpen}
+        onClose={() => setLicenseDialogOpen(false)}
+      />
     </div>
   );
 }
