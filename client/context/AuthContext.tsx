@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -77,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (
     name: string,
     email: string,
-    password: string
+    password: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -87,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const firebaseUser = userCredential.user;
 
@@ -125,7 +131,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const firebaseUser = userCredential.user;
 
@@ -167,11 +173,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setError(null);
       // Update user plan in Firestore
-      await setDoc(
-        doc(db, "users", user.id),
-        { plan },
-        { merge: true }
-      );
+      await setDoc(doc(db, "users", user.id), { plan }, { merge: true });
 
       // Update local state
       setUser({ ...user, plan });

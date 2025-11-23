@@ -51,7 +51,8 @@ export default function Register() {
       await register(formData.name, formData.email, formData.password);
       navigate("/");
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Registration failed";
+      const errorMsg =
+        err instanceof Error ? err.message : "Registration failed";
       setError(errorMsg);
     } finally {
       setIsLoading(false);
@@ -90,7 +91,8 @@ export default function Register() {
             backgroundColor: "#0A0A0A",
             borderColor: "#1A1A1A",
             boxShadow: "0 0 40px rgba(255, 255, 255, 0.03)",
-            animation: "slideUp 0.6s ease-out cubic-bezier(0.34, 1.56, 0.64, 1)",
+            animation:
+              "slideUp 0.6s ease-out cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           {/* Blue Wave Background Animation */}

@@ -133,10 +133,7 @@ export default function InputArea({
         </div>
 
         {/* Helper Text */}
-        <p
-          className="text-xs mt-3 px-4"
-          style={{ color: "#666666" }}
-        >
+        <p className="text-xs mt-3 px-4" style={{ color: "#666666" }}>
           Press Enter to send, Shift+Enter for new line
         </p>
       </div>

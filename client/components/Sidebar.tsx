@@ -59,10 +59,7 @@ export default function Sidebar({
       }}
     >
       {/* Header Section - User Profile */}
-      <div
-        className="px-6 py-6 border-b"
-        style={{ borderColor: "#1A1A1A" }}
-      >
+      <div className="px-6 py-6 border-b" style={{ borderColor: "#1A1A1A" }}>
         <div className="flex items-center gap-4">
           {/* Avatar */}
           <div
@@ -82,10 +79,7 @@ export default function Sidebar({
             >
               {user?.name || "User"}
             </p>
-            <p
-              className="text-xs"
-              style={{ color: "#666666" }}
-            >
+            <p className="text-xs" style={{ color: "#666666" }}>
               {user?.email || "Account"}
             </p>
           </div>
@@ -148,10 +142,7 @@ export default function Sidebar({
                   >
                     {conv.title}
                   </p>
-                  <p
-                    className="text-xs"
-                    style={{ color: "#666666" }}
-                  >
+                  <p className="text-xs" style={{ color: "#666666" }}>
                     {formatTimestamp(conv.timestamp)}
                   </p>
                 </div>
@@ -172,10 +163,7 @@ export default function Sidebar({
               </div>
             ))
           ) : (
-            <p
-              className="text-sm px-2"
-              style={{ color: "#666666" }}
-            >
+            <p className="text-sm px-2" style={{ color: "#666666" }}>
               No conversations yet
             </p>
           )}
@@ -183,10 +171,7 @@ export default function Sidebar({
       </div>
 
       {/* Bottom Section - Plan Card */}
-      <div
-        className="px-4 py-4 border-t"
-        style={{ borderColor: "#1A1A1A" }}
-      >
+      <div className="px-4 py-4 border-t" style={{ borderColor: "#1A1A1A" }}>
         <div
           className="rounded-lg overflow-hidden p-3 text-center"
           style={{
@@ -195,10 +180,7 @@ export default function Sidebar({
             boxShadow: "0 0 12px rgba(255, 255, 255, 0.03)",
           }}
         >
-          <span
-            className="text-xs font-semibold"
-            style={{ color: "#FFFFFF" }}
-          >
+          <span className="text-xs font-semibold" style={{ color: "#FFFFFF" }}>
             Plan: {user?.plan || "Gratuit"}
           </span>
         </div>

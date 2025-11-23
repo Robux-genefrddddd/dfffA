@@ -159,10 +159,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
           className="px-6 py-6 border-b flex-shrink-0"
           style={{ borderColor: "#1A1A1A" }}
         >
-          <h2
-            className="text-lg font-bold mb-4"
-            style={{ color: "#FFFFFF" }}
-          >
+          <h2 className="text-lg font-bold mb-4" style={{ color: "#FFFFFF" }}>
             Menu
           </h2>
           <button
@@ -212,10 +209,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                       >
                         {conv.title}
                       </p>
-                      <p
-                        className="text-xs"
-                        style={{ color: "#666666" }}
-                      >
+                      <p className="text-xs" style={{ color: "#666666" }}>
                         {formatTimestamp(conv.timestamp)}
                       </p>
                     </div>
@@ -236,10 +230,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                   </div>
                 ))
               ) : (
-                <p
-                  className="text-sm px-2"
-                  style={{ color: "#666666" }}
-                >
+                <p className="text-sm px-2" style={{ color: "#666666" }}>
                   No conversations yet
                 </p>
               )}
