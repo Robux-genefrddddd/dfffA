@@ -110,18 +110,24 @@ export default function Login() {
             }}
           />
 
-          <div>
+          <div className="relative z-10">
             {/* Header */}
             <div className="mb-8 text-center">
               <h1
                 className="text-3xl font-bold mb-2"
-                style={{ color: "#1a1a1a" }}
+                style={{
+                  color: "#FFFFFF",
+                  animation: "fadeInDown 0.6s ease-out 0.1s both",
+                }}
               >
                 Se connecter
               </h1>
               <p
                 className="text-sm"
-                style={{ color: "#666666" }}
+                style={{
+                  color: "#888888",
+                  animation: "fadeInDown 0.6s ease-out 0.2s both",
+                }}
               >
                 Bienvenue sur votre compte
               </p>
