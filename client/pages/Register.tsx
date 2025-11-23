@@ -201,8 +201,7 @@ export default function Register() {
                   className="p-3 rounded-lg text-sm text-center"
                   style={{
                     backgroundColor: "rgba(239, 68, 68, 0.1)",
-                    color: "#EF4444",
-                    animation: "shake 0.5s ease-in-out",
+                    color: "#DC2626",
                   }}
                 >
                   {error}
@@ -213,24 +212,19 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 rounded-lg font-semibold transition-all duration-200 text-white mt-6 relative overflow-hidden group disabled:opacity-50"
+                className="w-full py-3 rounded-lg font-semibold transition-all duration-200 text-white mt-6 disabled:opacity-50"
                 style={{
                   backgroundColor: "#0A84FF",
-                  boxShadow: "0 0 20px rgba(10, 132, 255, 0.4)",
-                  animation: "fadeInUp 0.6s ease-out 0.6s both",
+                  border: "none",
                 }}
                 onMouseEnter={(e) => {
                   if (!isLoading) {
-                    (e.currentTarget as HTMLElement).style.boxShadow =
-                      "0 0 30px rgba(10, 132, 255, 0.6)";
                     (e.currentTarget as HTMLElement).style.backgroundColor =
                       "#0070DD";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isLoading) {
-                    (e.currentTarget as HTMLElement).style.boxShadow =
-                      "0 0 20px rgba(10, 132, 255, 0.4)";
                     (e.currentTarget as HTMLElement).style.backgroundColor =
                       "#0A84FF";
                   }
@@ -256,10 +250,7 @@ export default function Register() {
             {/* Sign In Link */}
             <div
               className="text-center mt-6 text-sm"
-              style={{
-                color: "#888888",
-                animation: "fadeInUp 0.6s ease-out 0.7s both",
-              }}
+              style={{ color: "#666666" }}
             >
               Déjà un compte ?{" "}
               <a
