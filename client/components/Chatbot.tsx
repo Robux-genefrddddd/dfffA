@@ -159,6 +159,8 @@ export default function Chatbot() {
             : conv,
         ),
       );
+
+      await incrementMessageCount();
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
