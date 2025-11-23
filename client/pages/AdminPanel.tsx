@@ -984,6 +984,126 @@ export default function AdminPanel() {
               </p>
             </div>
           )}
+
+          {/* Message History Tab */}
+          {activeTab === "message-history" && (
+            <div>
+              <h2
+                className="text-2xl font-bold mb-8"
+                style={{ color: "#FFFFFF" }}
+              >
+                Historique des Messages
+              </h2>
+
+              <div
+                className="rounded-lg p-6 border mb-8"
+                style={{
+                  backgroundColor: "#0D0D0D",
+                  borderColor: "#1A1A1A",
+                }}
+              >
+                <h3
+                  className="text-xl font-semibold mb-4"
+                  style={{ color: "#FFFFFF" }}
+                >
+                  Sélectionner un utilisateur
+                </h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <label
+                      className="block text-sm font-medium mb-2"
+                      style={{ color: "#FFFFFF" }}
+                    >
+                      ID Utilisateur
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedUserId}
+                      onChange={(e) => {
+                        setSelectedUserId(e.target.value);
+                        if (e.target.value) {
+                          fetchMessageHistory(e.target.value);
+                        } else {
+                          setMessageHistory([]);
+                        }
+                      }}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white"
+                      placeholder="Enter user ID..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {selectedUserId && (
+                <div
+                  className="rounded-lg p-6 border"
+                  style={{
+                    backgroundColor: "#0D0D0D",
+                    borderColor: "#1A1A1A",
+                  }}
+                >
+                  <h3
+                    className="text-xl font-semibold mb-4"
+                    style={{ color: "#FFFFFF" }}
+                  >
+                    Messages ({messageHistory.length})
+                  </h3>
+
+                  {loadingMessages ? (
+                    <p style={{ color: "#888888" }}>Chargement...</p>
+                  ) : messageHistory.length === 0 ? (
+                    <p style={{ color: "#888888" }}>
+                      Aucun message trouvé pour cet utilisateur
+                    </p>
+                  ) : (
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {messageHistory.map((msg, idx) => (
+                        <div
+                          key={idx}
+                          className="p-4 bg-slate-900 rounded border border-slate-700"
+                        >
+                          <p className="text-xs mb-2" style={{ color: "#888888" }}>
+                            {new Date(msg.timestamp).toLocaleString()}
+                          </p>
+                          <div className="space-y-2">
+                            <div>
+                              <p
+                                className="text-xs font-semibold mb-1"
+                                style={{ color: "#0A84FF" }}
+                              >
+                                Utilisateur:
+                              </p>
+                              <p
+                                className="text-sm p-2 bg-black rounded"
+                                style={{ color: "#FFFFFF" }}
+                              >
+                                {msg.message}
+                              </p>
+                            </div>
+                            <div>
+                              <p
+                                className="text-xs font-semibold mb-1"
+                                style={{ color: "#888888" }}
+                              >
+                                Assistant:
+                              </p>
+                              <p
+                                className="text-sm p-2 bg-black rounded"
+                                style={{ color: "#CCCCCC" }}
+                              >
+                                {msg.response}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
