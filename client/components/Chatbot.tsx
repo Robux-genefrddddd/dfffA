@@ -162,14 +162,7 @@ export default function Chatbot() {
       id: newId,
       title: "New Conversation",
       timestamp: new Date(),
-      messages: [
-        {
-          id: "1",
-          content: "Hello! I'm your AI assistant. How can I help you today?",
-          sender: "assistant",
-          timestamp: new Date(),
-        },
-      ],
+      messages: [],
     };
     setConversations((prev) => [newConversation, ...prev]);
     setActiveConversationId(newId);
