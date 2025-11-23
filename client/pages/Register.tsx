@@ -304,14 +304,15 @@ export default function Register() {
                 </div>
               )}
 
-              {/* Cloudflare Turnstile */}
+              {/* hCaptcha */}
               <div
                 className="flex flex-col items-center gap-2"
                 style={{
                   animation: "fadeInUp 0.6s ease-out 0.55s both",
                 }}
               >
-                <Turnstile
+                <HCaptcha
+                  ref={hcaptchaRef}
                   sitekey={getSiteKey()}
                   onVerify={(token) => {
                     setCaptchaToken(token);
