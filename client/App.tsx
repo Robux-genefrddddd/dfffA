@@ -14,7 +14,11 @@ import Admin from "./pages/Admin";
 import AdminPanel from "./pages/AdminPanel";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import LicensePopups from "./components/LicensePopups";
+import LicenseActivationModal from "./components/LicenseActivationModal";
+import MaintenanceModeOverlay from "./components/MaintenanceModeOverlay";
 import { useEffect, useState } from "react";
+import { AntiBypass } from "./lib/antiBypass";
 
 const queryClient = new QueryClient();
 
