@@ -41,6 +41,7 @@ export default function Sidebar({
   const navigate = useNavigate();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
 
   const handleLogout = async () => {
     try {
