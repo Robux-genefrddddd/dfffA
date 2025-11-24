@@ -17,7 +17,16 @@ export const verifyCaptchaToken = async (
       body: JSON.stringify({ token }),
     });
 
-    const data = await response.json();
+    let data: HcaptchaVerifyResponse;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      console.error("Failed to parse captcha response:", parseError);
+      return {
+        success: false,
+        error: "Unable to verify captcha. Please try again.",
+      };
+    }
 
     if (!response.ok) {
       return {
