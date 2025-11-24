@@ -87,7 +87,9 @@ export default function Login() {
         }
       } catch (captchaError) {
         console.error("Captcha verification error:", captchaError);
-        setError("Unable to verify captcha. Please try again or refresh the page.");
+        setError(
+          "Unable to verify captcha. Please try again or refresh the page.",
+        );
         setCaptchaToken(null);
         setCaptchaVerified(false);
         hcaptchaRef.current?.resetCaptcha();

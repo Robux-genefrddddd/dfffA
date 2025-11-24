@@ -80,7 +80,8 @@ export default function Register() {
         const captchaVerification = await verifyCaptchaToken(captchaToken);
         if (!captchaVerification.success) {
           setError(
-            captchaVerification.error || "Captcha verification failed. Please try again.",
+            captchaVerification.error ||
+              "Captcha verification failed. Please try again.",
           );
           setCaptchaToken(null);
           setCaptchaVerified(false);
@@ -89,7 +90,9 @@ export default function Register() {
         }
       } catch (captchaError) {
         console.error("Captcha verification error:", captchaError);
-        setError("Unable to verify captcha. Please try again or refresh the page.");
+        setError(
+          "Unable to verify captcha. Please try again or refresh the page.",
+        );
         setCaptchaToken(null);
         setCaptchaVerified(false);
         hcaptchaRef.current?.resetCaptcha();
