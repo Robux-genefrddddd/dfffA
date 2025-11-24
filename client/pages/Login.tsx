@@ -16,6 +16,7 @@ export default function Login() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isCaptchaReady, setIsCaptchaReady] = useState(false);
   const [captchaFailed, setCaptchaFailed] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const hcaptchaRef = useRef<HCaptcha>(null);
 
   const { login } = useAuth();
@@ -276,6 +277,7 @@ export default function Login() {
                   sitekey={getSiteKey()}
                   onVerify={(token) => {
                     setCaptchaToken(token);
+                    setCaptchaVerified(true);
                     setError("");
                   }}
                   onError={() => {
@@ -285,6 +287,7 @@ export default function Login() {
                   }}
                   onExpire={() => {
                     setCaptchaToken(null);
+                    setCaptchaVerified(false);
                     setError(
                       "Le captcha a expiré, veuillez le valider à nouveau.",
                     );
@@ -306,6 +309,12 @@ export default function Login() {
                 {captchaFailed && (
                   <span className="text-xs" style={{ color: "#EF4444" }}>
                     Captcha not loaded. Refresh to try again.
+                  </span>
+                )}
+
+                {captchaVerified && (
+                  <span className="text-xs" style={{ color: "#10B981" }}>
+                    ✓ Captcha verified
                   </span>
                 )}
               </div>
